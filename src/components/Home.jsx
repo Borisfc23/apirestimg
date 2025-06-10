@@ -4,7 +4,7 @@ import SearchResult from "./SearchResult";
 import axios from "axios";
 const Home = () => {
   let { darkMode, setdarkMode } = useContext(DarkModeContext);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("dog");
   const [fotos, setfotos] = useState([]);
   const [page, setpage] = useState(1);
   const [disableLoadMore, setdisableLoadMore] = useState(false);
@@ -25,9 +25,15 @@ const Home = () => {
   };
   const peticionAPI = async () => {
     try {
-      let url = `https://api.unsplash.com/search/photos?page=${page}&query=${search}&client_id=${access_key}`;
-      const response = await axios.get(url);
+      let url = `https://api.unsplash.com/search/photos?page=${page}&query=${search}`;
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: "Client-ID " + access_key,
+        },
+      });
       const newResponse = response.data.results;
+      console.log(newResponse);
+
       setfotos((prevFotos) => [...prevFotos, ...newResponse]);
 
       if (newResponse.length === 0) {
@@ -63,7 +69,7 @@ const Home = () => {
             fotos.map((foto) => {
               return (
                 <SearchResult
-                  key={foto.id}
+                  key={Math.random()}
                   src={foto.urls.regular}
                   alt={foto.alt_description}
                   tags={foto.tags}
